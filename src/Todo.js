@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ListItem, List, ListItemText, Button, Modal } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import db from './firebase'
+import firebase from "firebase"
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 
 const useStyles = makeStyles((theme) => ({
@@ -26,7 +27,8 @@ function Todo(props) {
 
     const updateTodo = () => {
         db.collection('todos').doc(props.todo.id).set({
-            todo: input
+            todo: input,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
         }, { merge: true })
 
         setOpen(false)
@@ -41,7 +43,7 @@ function Todo(props) {
                 <div className={classes.paper}>
                     <h1>I am a Modal</h1>
                     <input placeholder={props.todo.todo} value={input} onChange={event => setInput(event.target.value)}/>
-                    <Button onClick={e => setOpen(false)}>Update TODO</Button>
+                    <Button onClick={updateTodo}>Update TODO</Button>
                 </div>
             </Modal>
             <List>
